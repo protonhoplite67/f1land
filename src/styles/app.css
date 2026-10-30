@@ -164,6 +164,8 @@ input {
     radial-gradient(90% 50% at 100% 110%, rgba(47, 230, 255, 0.06), transparent 60%),
     var(--bg);
   overflow: hidden;
+  /* Unlike hidden, clip can't be scrolled by scrollIntoView/focus (the hidden nav overflows below). */
+  overflow: clip;
 }
 
 .app__bg-lines {
