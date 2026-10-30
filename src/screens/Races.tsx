@@ -234,7 +234,6 @@ function RaceHero({ m, status, now }: { m: Meeting; status: MeetingStatus; now: 
             {focus.live ? (
               <>
                 <span className="badge badge--live">
-                  <span className="dot-live" />
                   LIVE
                 </span>
                 <b>{t(`session.${focus.s.kind}`)}</b>
@@ -258,13 +257,13 @@ function RaceHero({ m, status, now }: { m: Meeting; status: MeetingStatus; now: 
               push({ name: 'meeting', meetingId: m.id });
             }}
           >
-            {t('scr.races.weekend')}
+            <span className="ellipsis">{t('scr.races.weekend')}</span>
             <IconChevron size={16} />
           </button>
           {ch && (
             <button className="btn btn--ghost" onClick={() => watchChannel(ch)}>
               <IconPlay size={16} />
-              {t('races.watchDemo')}
+              <span className="ellipsis">{t('races.watchDemo')}</span>
             </button>
           )}
         </div>
@@ -492,7 +491,6 @@ function SessionRow({ m, s, now }: { m: Meeting; s: CalendarSession; now: number
         )}
         {st === 'live' && (
           <span className="badge badge--live">
-            <span className="dot-live" />
             LIVE
           </span>
         )}
@@ -607,7 +605,6 @@ function SessionBody({ ch }: { ch: DemoChannel }) {
               <span className="sc-hero__round">{t(`session.${ch.sessionType}`)}</span>
               {isActive && live && (
                 <span className="badge badge--live">
-                  <span className="dot-live" />
                   LIVE
                 </span>
               )}

@@ -723,7 +723,10 @@ input {
 }
 
 .segmented__btn {
-  flex: 1;
+  /* Grow from content width so a long label + count isn't clipped by an equal split. */
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 4px;
   position: relative;
   height: 36px;
   border-radius: 10px;
@@ -740,6 +743,9 @@ input {
 
 .segmented__btn[aria-selected='true'] {
   color: var(--lime);
+}
+.segmented:has(> :nth-child(4)) .segmented__btn {
+  font-size: 12.5px;
 }
 
 .segmented__ind {

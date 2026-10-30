@@ -69,8 +69,11 @@
   margin-top: 0;
 }
 .sc-btnrow--split > .btn {
-  flex: 1 1 0;
+  flex: 1 1 auto;
   min-width: 0;
+  gap: 6px;
+  padding: 0 12px;
+  font-size: 14px;
 }
 
 /* The global .icon rule pins 20px; honour explicit icon sizes inside screen components. */
@@ -646,13 +649,17 @@
 }
 .sc-hero__actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 14px;
 }
 .sc-hero__actions .btn {
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 0 10px;
+  /* Content-sized, never truncated: on very narrow screens the pair wraps to two rows. */
+  flex: 1 1 auto;
+  min-width: max-content;
+  gap: 6px;
+  padding: 0 12px;
+  font-size: 14px;
 }
 
 .sc-cd {
