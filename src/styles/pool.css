@@ -1888,13 +1888,15 @@
   100% { transform: scale(1); }
 }
 
-/* ---------- Ticket dock (sticky, always above the nav) ---------- */
+/* ---------- Ticket dock (sticky; the nav is hidden on the pool route) ---------- */
 .pl--dock {
   padding-bottom: 4px;
 }
 .tdock {
   position: sticky;
-  bottom: calc(var(--nav-h) + var(--safe-bottom) + 16px);
+  /* Sticky insets count from the screen's content edge, which already sits
+     --nav-top + 18px up; -8px leaves the same 10px gap the floating nav uses. */
+  bottom: -8px;
   z-index: 8;
   margin: 16px -4px 0;
   padding: 10px 12px 12px;

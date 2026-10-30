@@ -709,7 +709,7 @@
   position: absolute;
   left: 12px;
   right: 12px;
-  bottom: calc(var(--safe-bottom) + var(--nav-h) + 18px);
+  bottom: calc(var(--nav-top) + 10px);
   z-index: 200;
   display: flex;
   justify-content: center;

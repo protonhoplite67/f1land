@@ -42,7 +42,11 @@
   --tg-safe-bottom: 0px;
   --safe-top: max(env(safe-area-inset-top, 0px), var(--tg-safe-top));
   --safe-bottom: max(env(safe-area-inset-bottom, 0px), var(--tg-safe-bottom));
-  --nav-h: 74px;
+  --nav-h: 70px;
+  /* Floating nav sits just above the home indicator rather than a full inset above it. */
+  --nav-gap: max(10px, calc(var(--safe-bottom) - 12px));
+  /* Distance from the viewport bottom to the nav's top edge; 0 + safe area when hidden. */
+  --nav-top: calc(var(--nav-gap) + var(--nav-h));
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   color-scheme: dark;
@@ -147,6 +151,9 @@ input {
 /* App shell                                                           */
 /* ------------------------------------------------------------------ */
 
+.app[data-nav='hidden'] {
+  --nav-top: var(--safe-bottom);
+}
 .app {
   position: fixed;
   inset: 0;
@@ -179,7 +186,7 @@ input {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: calc(var(--safe-top) + 8px) 14px calc(var(--nav-h) + var(--safe-bottom) + 22px);
+  padding: calc(var(--safe-top) + 8px) 14px calc(var(--nav-top) + 18px);
   scrollbar-width: none;
 }
 
@@ -791,122 +798,74 @@ input {
 }
 
 /* ------------------------------------------------------------------ */
-/* Bottom navigation (F1 style)                                        */
+/* Bottom navigation: floating glass bar; the active-tab indicator is a */
+/* top-down F1 car (see ui/NavBar.tsx for the drive choreography).      */
 /* ------------------------------------------------------------------ */
-
 .nav {
   position: absolute;
   left: 10px;
   right: 10px;
-  bottom: calc(var(--safe-bottom) + 8px);
+  bottom: var(--nav-gap);
   height: var(--nav-h);
   z-index: 40;
-  border-radius: 26px;
-  background:
-    radial-gradient(60% 120% at 50% 120%, rgba(198, 255, 61, 0.08), transparent 70%),
-    linear-gradient(180deg, rgba(22, 29, 34, 0.9), rgba(8, 11, 13, 0.96));
-  border: 1px solid var(--stroke-2);
-  backdrop-filter: blur(18px) saturate(1.3);
-  -webkit-backdrop-filter: blur(18px) saturate(1.3);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    0 18px 40px -10px rgba(0, 0, 0, 0.85);
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  align-items: end;
-  padding: 0 4px 8px;
-  transition: transform 0.35s var(--ease-out), opacity 0.3s;
+  padding: 0 2px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(21, 27, 31, 0.95), rgba(9, 12, 14, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 36px -14px rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  transition:
+    transform 0.42s var(--ease-out),
+    opacity 0.3s;
 }
-/* Lime light strip along the top edge, like a pit-wall LED. */
-.nav::before {
-  content: '';
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  top: -1px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(198, 255, 61, 0.55), transparent);
-  pointer-events: none;
+.nav--live {
+  background: linear-gradient(180deg, rgba(14, 19, 22, 0.86), rgba(6, 9, 11, 0.94));
 }
 .nav--hidden {
-  transform: translateY(130%);
+  transform: translateY(calc(100% + var(--nav-gap) + 8px));
   opacity: 0;
   pointer-events: none;
-}
-.nav__track {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  top: 8px;
-  height: 8px;
-  pointer-events: none;
-}
-.nav__asphalt {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 3px;
-  height: 2px;
-  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.16) 0 8px, transparent 8px 14px);
-  border-radius: 2px;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-.nav__trail {
-  position: absolute;
-  top: 2px;
-  height: 4px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, transparent, var(--lime));
-  box-shadow: 0 0 10px var(--lime);
-  opacity: 0;
-}
-.nav__car {
-  position: absolute;
-  top: -6px;
-  width: 34px;
-  height: 18px;
-  margin-left: -17px;
-  filter: drop-shadow(0 0 6px rgba(198, 255, 61, 0.6));
-  transition: opacity 0.3s;
-}
-.nav--live .nav__car {
-  opacity: 0;
 }
 .nav__item {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: 3px;
-  height: 56px;
+  gap: 2px;
   min-width: 0;
+  padding-top: 8px;
   color: var(--muted);
   font-weight: 600;
-  transition: color 0.25s;
+  transition: color 0.2s;
 }
 .nav__icon {
   position: relative;
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 30px;
-  border-radius: 12px;
-  transition: background 0.3s;
+  width: 28px;
+  height: 26px;
 }
 .nav__item .icon {
-  width: 23px;
-  height: 23px;
-  transition: transform 0.3s var(--ease-spring);
+  width: 24px;
+  height: 24px;
+  transition:
+    transform 0.14s var(--ease-out),
+    filter 0.3s;
 }
 .nav__item:active .icon {
-  transform: scale(0.82);
+  transform: scale(0.86);
 }
 .nav__label {
   max-width: 100%;
-  font-size: clamp(9.5px, 2.75vw, 11px);
-  line-height: 1.15;
+  padding: 0 2px;
+  font-size: 11px;
+  line-height: 14px;
   letter-spacing: 0.01em;
   white-space: nowrap;
   overflow: hidden;
@@ -915,46 +874,24 @@ input {
 .nav__item[aria-current='page'] {
   color: var(--lime);
 }
-.nav__item[aria-current='page'] .nav__icon {
-  background: radial-gradient(70% 90% at 50% 100%, rgba(198, 255, 61, 0.22), transparent 72%);
-}
 .nav__item[aria-current='page'] .icon {
   filter: drop-shadow(0 0 6px var(--lime-glow));
-  transform: translateY(-1px);
-}
-/* "Pit box" marker under the active tab. */
-.nav__item::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  width: 22px;
-  height: 3px;
-  border-radius: 3px 3px 0 0;
-  background: var(--lime);
-  box-shadow: 0 0 10px var(--lime);
-  transform: scaleX(0);
-  transition: transform 0.35s var(--ease-spring);
-}
-.nav__item[aria-current='page']::after {
-  transform: scaleX(1);
 }
 .nav__badge {
   position: absolute;
-  top: 1px;
-  right: -3px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
+  top: -3px;
+  right: -7px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
   border-radius: 9px;
   background: var(--lime);
   color: #0b1200;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
-  line-height: 18px;
+  line-height: 17px;
   text-align: center;
-  box-shadow:
-    0 0 0 2px #0b0f12,
-    0 0 12px var(--lime-glow);
+  box-shadow: 0 0 0 2px #0d1114;
   animation: badge-pop 0.5s var(--ease-spring);
 }
 @keyframes badge-pop {
@@ -965,83 +902,120 @@ input {
     transform: none;
   }
 }
-.nav__center {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  height: 56px;
-}
-.nav__pulse {
+/* Race status on the Live tab: red = session running, yellow = SC / VSC. */
+.nav__flag {
   position: absolute;
-  bottom: 6px;
-  width: 64px;
-  height: 64px;
+  top: 0;
+  right: -1px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at 50% 30%, #253a14, #0a0f06 72%);
-  border: 2px solid var(--lime);
+  background: var(--red);
   box-shadow:
-    0 0 0 5px rgba(8, 11, 13, 0.92),
-    0 0 0 6px rgba(198, 255, 61, 0.2),
-    0 0 26px rgba(198, 255, 61, 0.5);
-  color: var(--lime);
-  transition: transform 0.2s var(--ease-out), background 0.3s, color 0.3s, box-shadow 0.3s;
+    0 0 0 2px #0d1114,
+    0 0 8px rgba(255, 59, 71, 0.85);
 }
-.nav__pulse:active {
-  transform: scale(0.92);
-}
-.nav__pulse[aria-current='page'] {
-  background: radial-gradient(circle at 50% 30%, #e2ff8a, #93d61c 78%);
-  color: #0b1200;
-  box-shadow:
-    0 0 0 5px rgba(8, 11, 13, 0.92),
-    0 0 0 6px rgba(198, 255, 61, 0.4),
-    0 0 36px rgba(198, 255, 61, 0.85);
-}
-.nav__pulse svg {
-  width: 30px;
-  height: 30px;
-  animation: heartbeat 1.8s ease-in-out infinite;
-}
-.nav__pulse-ring,
-.nav__pulse::after {
+.nav__flag::after {
   content: '';
   position: absolute;
-  inset: -9px;
+  inset: -3px;
   border-radius: 50%;
-  border: 1.5px solid rgba(198, 255, 61, 0.5);
-  animation: ring 2.4s ease-out infinite;
+  border: 1.5px solid currentColor;
+  color: rgba(255, 59, 71, 0.7);
+  animation: flag-ping 2s ease-out infinite;
+}
+.nav__flag[data-flag='sc'] {
+  background: var(--yellow);
+  box-shadow:
+    0 0 0 2px #0d1114,
+    0 0 8px rgba(255, 209, 46, 0.85);
+}
+.nav__flag[data-flag='sc']::after {
+  color: rgba(255, 209, 46, 0.7);
+  animation-duration: 1s;
+}
+@keyframes flag-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  70%,
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* The lane the car drives in: full bar, painted under the tab buttons. */
+.nav__lane {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Clip pivots and smoke to the bar's rounded shape. */
+  border-radius: inherit;
   pointer-events: none;
 }
-.nav__pulse::after {
-  animation-delay: 1.2s;
-}
-.nav__pulse-label {
+.nav__car {
   position: absolute;
-  bottom: -8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 9px;
-  font-weight: 800;
-  line-height: 14px;
-  letter-spacing: 0.16em;
-  color: #fff;
-  background: linear-gradient(180deg, #ff3b47, #c3121e);
-  border-radius: 5px;
-  padding: 0 5px 0 4px;
-  box-shadow: 0 0 10px rgba(255, 59, 71, 0.55);
+  bottom: 4px;
+  left: -23px;
+  width: 46px;
+  height: 17px;
+  will-change: transform;
 }
-.nav__pulse-label::before {
-  content: '';
-  width: 5px;
-  height: 5px;
+.nav__car-body,
+.nav__car-chassis {
+  position: absolute;
+  inset: 0;
+}
+.nav__car-chassis svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 1.5px 1.2px rgba(0, 0, 0, 0.75));
+}
+/* Ground light under the parked car. */
+.nav__car-glow {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 2px;
+  bottom: 2px;
   border-radius: 50%;
-  background: #fff;
-  animation: pulse-dot 1.4s ease-in-out infinite;
+  background: radial-gradient(closest-side, rgba(198, 255, 61, 0.42), rgba(198, 255, 61, 0.1) 60%, transparent);
+  filter: blur(4px);
+  transition: opacity 0.3s;
+}
+.nav__car[data-moving] .nav__car-glow {
+  opacity: 0.35;
+}
+/* Long-exposure light streak behind the car; width/opacity driven per frame. */
+.nav__trail {
+  position: absolute;
+  right: 90%;
+  top: 50%;
+  width: 0;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, rgba(198, 255, 61, 0.35) 45%, rgba(230, 255, 160, 0.95));
+  box-shadow: 0 0 8px rgba(198, 255, 61, 0.55);
+  opacity: 0;
+}
+.nav-car__rain {
+  fill: #4a0d12;
+  transition: fill 0.1s;
+}
+.nav__car[data-brake] .nav-car__rain {
+  fill: #ff3b47;
+  filter: drop-shadow(0 0 2px #ff3b47) drop-shadow(0 0 4px rgba(255, 59, 71, 0.8));
+}
+.nav__puff {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(214, 222, 228, 0.55), rgba(214, 222, 228, 0.12) 60%, transparent);
+  pointer-events: none;
 }
 @keyframes ring {
   0% {
@@ -1051,19 +1025,6 @@ input {
   100% {
     transform: scale(1.4);
     opacity: 0;
-  }
-}
-@keyframes heartbeat {
-  0%,
-  40%,
-  100% {
-    transform: scale(1);
-  }
-  12% {
-    transform: scale(1.14);
-  }
-  24% {
-    transform: scale(0.98);
   }
 }
 

@@ -9,7 +9,7 @@ const ru: Record<string, string> = {
   'nav.label': 'Основная навигация',
   'nav.home': 'Главная',
   'nav.races': 'Гонки',
-  'nav.live': 'Прямой эфир',
+  'nav.live': 'Эфир',
   'nav.pools': 'Мои пулы',
   'nav.profile': 'Профиль',
   'ui.help': 'Справка',

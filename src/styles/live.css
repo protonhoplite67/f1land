@@ -6,7 +6,7 @@
   --lv-top: calc(var(--safe-top) + 8px);
   --lv-strip: calc(var(--safe-top) + 62px);
   --lv-under: calc(var(--safe-top) + 116px);
-  --lv-bottom: calc(var(--nav-h) + var(--safe-bottom) + 8px);
+  --lv-bottom: calc(var(--nav-top) + 8px);
   position: absolute;
   inset: 0;
   pointer-events: none;
