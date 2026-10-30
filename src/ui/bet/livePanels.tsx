@@ -394,11 +394,11 @@ export function TimingTable({ cars, quali, followId, onPick }: { cars: LiveCar[]
         {quali ? (
           <span>{t('live.bestLap')}</span>
         ) : (
-          <button type="button" className="tt__sort" onClick={() => (haptic.tap(), setInterval_(!interval))}>
-            {interval ? t('live.interval') : t('live.gap')} <IcSwapCar size={11} />
+          <button type="button" className="tt__sort" aria-label={interval ? t('live.interval') : t('live.gap')} onClick={() => (haptic.tap(), setInterval_(!interval))}>
+            {interval ? t('tt.int') : t('tt.gap')} <IcSwapCar size={11} />
           </button>
         )}
-        <span>{t('live.lastLap')}</span>
+        <span>{t('tt.last')}</span>
         <span>{quali ? '' : t('live.tyre')}</span>
       </div>
       {cars.map((c) => {

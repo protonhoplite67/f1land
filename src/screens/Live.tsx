@@ -10,7 +10,7 @@ import { DRIVER_BY_ID, TEAM_BY_ID } from '@/data/teams';
 import type { LiveState, Moment } from '@/sim/types';
 import type { CameraMode } from '@/three/engine/cameraRig';
 import { flagEmoji, fmtCountdown, getLang, t } from '@/i18n/core';
-import { useSceneView, getScene } from '@/app/SceneHost';
+import { useSceneView, getScene, webglAvailable } from '@/app/SceneHost';
 import { DriverAvatar, Sheet } from '@/ui/kit';
 import { IconEye, IconFast, IconLayers, IconMap, IconPause, IconPlay, IconSettings, IconWarning, IconChevron } from '@/ui/icons';
 import { haptic } from '@/telegram/sdk';
@@ -274,7 +274,7 @@ export function LiveScreen() {
         header={
           <div className="lv-tabs" role="tablist" aria-label={t('live.pools')}>
             {tabs.map((o) => (
-              <button key={o.id} type="button" role="tab" aria-selected={tab === o.id} className={`lv-tab ${tab === o.id ? 'lv-tab--on' : ''}`} onClick={() => pickTab(o.id)}>
+              <button key={o.id} type="button" role="tab" aria-selected={tab === o.id} aria-label={o.count ? `${o.label} (${o.count})` : o.label} className={`lv-tab ${tab === o.id ? 'lv-tab--on' : ''}`} onClick={() => pickTab(o.id)}>
                 {tab === o.id && !reduced && <motion.span layoutId="lv-tab-ind" className="lv-tab__ind" transition={{ type: 'spring', stiffness: 520, damping: 40 }} />}
                 {tab === o.id && reduced && <span className="lv-tab__ind" />}
                 <span className="lv-tab__icon">{o.icon}</span>
@@ -411,14 +411,19 @@ function Rail({ onDirector }: { onDirector: () => void }) {
   const renderMode = useSettings((s) => s.renderMode);
   const showZones = useSettings((s) => s.showZones);
   const setSettings = useSettings((s) => s.set);
+  const webglLost = useSceneView((s) => s.webglLost);
   const [camMenu, setCamMenu] = useState(false);
   const CamIcon = CAMERA_ICON[camera];
+  // Camera modes only exist in the 3D scene; the SVG map has a single fixed view.
+  const scene3d = renderMode === '3d' && !webglLost && webglAvailable();
   return (
     <>
       <div className="lv-rail">
-        <button type="button" className={`lv-rail__btn ${camMenu ? 'lv-rail__btn--on' : ''}`} aria-label={t('live.camera')} aria-expanded={camMenu} onClick={() => (haptic.tap(), setCamMenu(!camMenu))}>
-          {CamIcon && <CamIcon size={20} />}
-        </button>
+        {scene3d && (
+          <button type="button" className={`lv-rail__btn ${camMenu ? 'lv-rail__btn--on' : ''}`} aria-label={t('live.camera')} aria-expanded={camMenu} onClick={() => (haptic.tap(), setCamMenu(!camMenu))}>
+            {CamIcon && <CamIcon size={20} />}
+          </button>
+        )}
         <button
           type="button"
           className={`lv-rail__btn ${showZones ? 'lv-rail__btn--on' : ''}`}
@@ -447,7 +452,7 @@ function Rail({ onDirector }: { onDirector: () => void }) {
         </button>
       </div>
       <AnimatePresence>
-        {camMenu && (
+        {camMenu && scene3d && (
           <>
             <motion.button type="button" key="bd" className="lv-cam-bd" aria-label={t('ui.close')} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setCamMenu(false)} />
             <motion.div key="menu" className="lv-cam" initial={{ opacity: 0, x: 16, scale: 0.96 }} animate={{ opacity: 1, x: 0, scale: 1 }} exit={{ opacity: 0, x: 16, scale: 0.96 }} transition={{ duration: 0.18 }} role="menu" aria-label={t('live.camera')}>

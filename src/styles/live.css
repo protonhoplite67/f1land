@@ -467,6 +467,13 @@
   top: var(--lv-under);
   display: grid;
   gap: 8px;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+/* A raised sheet pushes the driver card and moments over the rail; step aside. */
+.lv--half .lv-rail,
+.lv--full .lv-rail {
+  opacity: 0;
+  visibility: hidden;
 }
 .lv-rail__btn {
   display: grid;
@@ -940,9 +947,10 @@
 }
 .lv-tab {
   position: relative;
-  flex: 0 0 auto;
+  flex: 1 0 auto;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   height: 38px;
   padding: 0 12px;
@@ -983,6 +991,28 @@
 .lv-tab--on .lv-tab__count {
   background: rgba(0, 0, 0, 0.2);
   color: #0a0e10;
+}
+/* Five labelled tabs need ~590px; narrower, only the selected one shows its label. */
+@media (max-width: 639px) {
+  .lv-tabs {
+    gap: 2px;
+  }
+  .lv-tab {
+    min-width: 44px;
+  }
+  .lv-tab:not(.lv-tab--on) .lv-tab__label {
+    display: none;
+  }
+}
+@media (max-width: 345px) {
+  .lv-tabs {
+    gap: 1px;
+    padding: 0 4px;
+  }
+  .lv-tab {
+    min-width: 40px;
+    padding: 0 8px;
+  }
 }
 
 /* ---------- Pool cards ---------- */
@@ -1675,9 +1705,6 @@
   .fc__stat--speed,
   .tt__name {
     display: none;
-  }
-  .lv-tab {
-    padding: 0 10px;
   }
   .fc__btn {
     min-width: 38px;
