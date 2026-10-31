@@ -539,6 +539,10 @@ export function Charts() {
   const shown = ids.filter((id) => !hidden.has(id));
   const fill = (arr: Array<number | null> | undefined) => Array.from({ length: arr?.length ?? 0 }, (_, i) => arr?.[i] ?? null);
   const cut = <T,>(arr: T[]) => (zoom ? arr.slice(-10) : arr);
+  // First lap number shown on the x axis once the window is cut to the last 10.
+  const n = (m: Map<string, unknown[]>) => Math.max(0, ...shown.map((id) => m.get(id)?.length ?? 0));
+  const first = (len: number) => (zoom ? Math.max(1, len - 9) : 1);
+  const line = <T extends number | null>(id: string, values: T[]) => ({ id, color: teamColor(id), values: cut(values), label: DRIVER_BY_ID[id]?.code, emphasis: id === followId });
   const best = (arr: number[]) => (arr.length ? Math.min(...arr) : null);
   const bestSector = [0, 1, 2].map((i) => Math.min(...[...data.sectors.values()].map((s) => best(s[i]) ?? Infinity)));
   const kinds: Array<{ id: ChartKind; label: string }> = [
@@ -549,24 +553,25 @@ export function Charts() {
   ];
   return (
     <div className="ch">
-      <div className="ch__bar">
-        <div className="ch__kinds" role="tablist" aria-label={t('live.graphs')}>
-          {kinds.map((k) => (
-            <button key={k.id} type="button" role="tab" aria-selected={kind === k.id} className={`ch__kind ${kind === k.id ? 'ch__kind--on' : ''}`} onClick={() => (haptic.tap(), setKind(k.id))}>
-              {k.label}
-            </button>
-          ))}
-        </div>
+      <div className="ch__kinds" role="tablist" aria-label={t('live.graphs')}>
+        {kinds.map((k) => (
+          <button key={k.id} type="button" role="tab" aria-selected={kind === k.id} className={`ch__kind ${kind === k.id ? 'ch__kind--on' : ''}`} onClick={() => (haptic.tap(), setKind(k.id))}>
+            {k.label}
+          </button>
+        ))}
+      </div>
+      <div className="ch__head">
+        <span className="ch__title">{t(`lv.chart.${kind}.title`)}</span>
         {kind !== 'sectors' && (
-          <button type="button" className={`ch__zoom ${zoom ? 'ch__zoom--on' : ''}`} aria-pressed={zoom} onClick={() => (haptic.tap(), setZoom(!zoom))}>
+          <button type="button" className="ch__zoom" aria-pressed={zoom} onClick={() => (haptic.tap(), setZoom(!zoom))}>
             {zoom ? t('lv.chart.all') : t('lv.chart.last10')}
           </button>
         )}
       </div>
       <div className="ch__card">
-        {kind === 'gap' && <LineChart invert series={shown.map((id) => ({ id, color: teamColor(id), values: cut(fill(data.gaps.get(id))) }))} yFormat={(v) => `+${v.toFixed(0)}s`} xLabel={t('live.lap')} height={170} />}
-        {kind === 'pos' && <LineChart invert series={shown.map((id) => ({ id, color: teamColor(id), values: cut(fill(data.positions.get(id))) }))} yFormat={(v) => `P${Math.round(v)}`} xLabel={t('live.lap')} height={170} />}
-        {kind === 'laps' && <LineChart series={shown.map((id) => ({ id, color: teamColor(id), values: cut(data.laps.get(id) ?? []) }))} yFormat={(v) => v.toFixed(1)} xLabel={t('live.lap')} height={170} />}
+        {kind === 'gap' && <LineChart invert series={shown.map((id) => line(id, fill(data.gaps.get(id))))} xStart={first(n(data.gaps))} yFormat={(v) => (v < 0.05 ? '0' : `+${v.toFixed(0)}s`)} xLabel={t('lv.lapShort')} height={180} />}
+        {kind === 'pos' && <LineChart invert series={shown.map((id) => line(id, fill(data.positions.get(id))))} xStart={first(n(data.positions))} yFormat={(v) => `P${Math.round(v)}`} xLabel={t('lv.lapShort')} height={180} />}
+        {kind === 'laps' && <LineChart series={shown.map((id) => line(id, data.laps.get(id) ?? []))} xStart={first(Math.max(0, ...shown.map((id) => data.laps.get(id)?.length ?? 0)))} yFormat={(v) => v.toFixed(1)} xLabel={t('lv.lapShort')} height={180} />}
         {kind === 'sectors' && (
           <div className="heat">
             <div className="heat__row heat__row--head">
@@ -586,9 +591,8 @@ export function Charts() {
                   {[0, 1, 2].map((i) => {
                     const b = s ? best(s[i]) : null;
                     const delta = b !== null && Number.isFinite(bestSector[i]!) ? b - bestSector[i]! : null;
-                    const k = delta === null ? 0 : Math.max(0, 1 - delta / 600);
                     return (
-                      <span key={i} className={`heat__cell num ${delta === 0 ? 'heat__cell--best' : ''}`} style={{ background: delta === null ? 'rgba(255,255,255,.04)' : delta === 0 ? 'rgba(178,107,255,.55)' : `rgba(198,255,61,${0.08 + k * 0.42})` }}>
+                      <span key={i} className={`heat__cell num ${delta === 0 ? 'heat__cell--best' : ''}`}>
                         {delta === null ? '—' : delta === 0 ? fmtSec(b!) : `+${fmtSec(delta)}`}
                       </span>
                     );
