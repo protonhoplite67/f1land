@@ -26,6 +26,8 @@ export default {
 
     'scr.races.kicker': 'Календарь',
     'scr.races.progress': 'Пройдено',
+    'scr.races.season': 'Сезон 2026 · пройдено {d} из {n}',
+    'scr.races.in': 'через {t}',
     'scr.races.empty': 'Нет этапов по фильтру',
     'scr.races.startsIn': '{s} — старт',
     'scr.races.weekend': 'Уикенд',
@@ -231,6 +233,8 @@ export default {
 
     'scr.races.kicker': 'Calendar',
     'scr.races.progress': 'Done',
+    'scr.races.season': 'Season 2026 · {d} of {n} done',
+    'scr.races.in': 'in {t}',
     'scr.races.empty': 'No rounds for this filter',
     'scr.races.startsIn': '{s} starts',
     'scr.races.weekend': 'Weekend',

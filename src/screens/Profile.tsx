@@ -165,7 +165,6 @@ export function ProfileScreen() {
       <Header />
       <Reveal i={i++}>
         <Card glow pad={false} className="sc-phero">
-          <div className="sc-phero__glow" aria-hidden="true" />
           <div className="sc-phero__row">
             <LevelRing value={lvl.into / lvl.need}>{you.photo ? <img src={you.photo} alt="" className="sc-phero__img" /> : <DriverAvatar id={you.driverId} size={70} />}</LevelRing>
             <div className="sc-phero__txt">
@@ -200,7 +199,6 @@ export function ProfileScreen() {
       <Reveal i={i++} className="section">
         <div className="section__head">
           <h2 className="section__title">{t('profile.stats')}</h2>
-          <span className="sc-note">DEMO</span>
         </div>
         <div className="sc-statgrid">
           <div className="sc-stat">
@@ -208,27 +206,12 @@ export function ProfileScreen() {
             <span className="sc-stat__k">{t('profile.entries')}</span>
           </div>
           <div className="sc-stat">
-            <span className="sc-stat__v num cyan">{stats.winRate === null ? '—' : `${Math.round(stats.winRate * 100)}%`}</span>
+            <span className="sc-stat__v num">{stats.winRate === null ? '—' : `${Math.round(stats.winRate * 100)}%`}</span>
             <span className="sc-stat__k">{t('profile.winRate')}</span>
           </div>
           <div className="sc-stat">
             <span className={`sc-stat__v num ${profitTone}`}>{signed(stats.profit, (n) => fmtNumber(n))}</span>
             <span className="sc-stat__k">{t('profile.profit')}</span>
-          </div>
-          <div className="sc-stat">
-            <span className="sc-stat__v num">
-              {stats.streak}
-              {stats.streak >= 2 && <i className="sc-fire">🔥</i>}
-            </span>
-            <span className="sc-stat__k">{t('profile.streak')}</span>
-          </div>
-          <div className="sc-stat">
-            <span className="sc-stat__v num lime">{stats.bestWin ? `+${fmtNumber(stats.bestWin)}` : '—'}</span>
-            <span className="sc-stat__k">{t('profile.best')}</span>
-          </div>
-          <div className="sc-stat">
-            <span className="sc-stat__v num">{stats.pending}</span>
-            <span className="sc-stat__k">{t('scr.profile.inPlay')}</span>
           </div>
         </div>
         {stats.profitSeries.length > 2 && (
@@ -249,7 +232,7 @@ export function ProfileScreen() {
             {unlocked}/{achList.length}
           </span>
         </div>
-        <AchievementsGrid list={achList} onOpen={setAch} />
+        <AchievementsGrid list={[...achList].sort((x, y) => Number(y.unlocked) - Number(x.unlocked) || y.progress - x.progress)} onOpen={setAch} />
       </Reveal>
 
       <Reveal i={i++} className="section">
@@ -298,17 +281,16 @@ export function ProfileScreen() {
       <Reveal i={i++} className="section">
         <div className="sc-menu-list">
           <MenuRow icon={<IconWallet size={20} />} title={t('profile.wallet')} sub={t('wallet.sub')} value={fmtNumber(balance)} onClick={() => push({ name: 'wallet' })} />
-          <MenuRow icon={<IconHistory size={20} />} tone="cyan" title={t('profile.history')} sub={t('scr.profile.historySub')} value={stats.total} onClick={() => push({ name: 'history' })} />
-          <MenuRow icon={<IconTrophy size={20} />} tone="yellow" title={t('profile.leaderboard')} sub={t('lb.sub')} value={`#${rank}`} onClick={() => push({ name: 'leaderboard' })} />
+          <MenuRow icon={<IconHistory size={20} />} title={t('profile.history')} sub={t('scr.profile.historySub')} value={stats.total} onClick={() => push({ name: 'history' })} />
+          <MenuRow icon={<IconTrophy size={20} />} title={t('profile.leaderboard')} sub={t('lb.sub')} value={`#${rank}`} onClick={() => push({ name: 'leaderboard' })} />
           <MenuRow
             icon={<IconGift size={20} />}
-            tone="purple"
             title={t('profile.rewards')}
             sub={t('rewards.sub')}
             badge={claimable > 0 ? <span className="sc-dotbadge num">{claimable}</span> : undefined}
             onClick={() => push({ name: 'rewards' })}
           />
-          <MenuRow icon={<IconSettings size={20} />} tone="orange" title={t('profile.settings')} sub={t('scr.profile.settingsSub')} onClick={() => push({ name: 'settings' })} />
+          <MenuRow icon={<IconSettings size={20} />} title={t('profile.settings')} sub={t('scr.profile.settingsSub')} onClick={() => push({ name: 'settings' })} />
         </div>
         <p className="sc-fine">{t('app.demoNote')}</p>
       </Reveal>

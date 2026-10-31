@@ -85,6 +85,7 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
   const chassisRef = useRef<HTMLDivElement>(null);
   const trailRef = useRef<HTMLDivElement>(null);
   const wellRef = useRef<HTMLDivElement>(null);
+  const slotRef = useRef<HTMLDivElement>(null);
   const items = useRef<Array<HTMLButtonElement | null>>([]);
   // x: car centre in lane px; yaw: degrees, 0 = nose right, -180 = nose left.
   const sim = useRef({ x: null as number | null, yaw: 0, raf: 0 });
@@ -98,6 +99,7 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
     sim.current.x = x;
     sim.current.yaw = yaw;
     carRef.current!.style.transform = `translate3d(${x}px,0,0)`;
+    if (slotRef.current) slotRef.current.style.transform = `translate3d(${x}px,0,0)`;
     bodyRef.current!.style.transform = `rotate(${yaw}deg)`;
     const well = wellRef.current;
     const tabW = items.current[0]?.offsetWidth;
@@ -190,6 +192,7 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
       sim.current.x = x;
       sim.current.yaw = yaw;
       car.style.transform = `translate3d(${x}px,0,0)`;
+      if (slotRef.current) slotRef.current.style.transform = `translate3d(${x}px,0,0)`;
       bodyRef.current!.style.transform = `rotate(${yaw}deg) scaleX(${1 + speed * 0.07})`;
       // The box stretches behind the car at speed, then snaps back as it parks.
       if (wellRef.current) wellRef.current.style.transform = `scaleX(${1 + speed * 0.18})`;
@@ -296,10 +299,14 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
           </button>
         );
       })}
-      <div className="nav__lane" ref={laneRef} aria-hidden="true">
-        <div className="nav__car" ref={carRef}>
+      <div className="nav__bed" aria-hidden="true">
+        <div className="nav__slot" ref={slotRef}>
           <div className="nav__well" ref={wellRef} />
           <div className="nav__rim" />
+        </div>
+      </div>
+      <div className="nav__lane" ref={laneRef} aria-hidden="true">
+        <div className="nav__car" ref={carRef}>
           <div className="nav__car-body" ref={bodyRef}>
             <div className="nav__trail" ref={trailRef} />
             <div className="nav__car-chassis" ref={chassisRef}>
