@@ -2988,26 +2988,35 @@
 
 @media (max-width: 370px) {
   .sc-hero__name {
-    font-size: 19px; }
+    font-size: 19px;
+  }
   .sc-mhero__name {
-    font-size: 21px; }
+    font-size: 21px;
+  }
   .sc-cd__box b {
-    font-size: 19px; }
+    font-size: 19px;
+  }
   .sc-trait {
-    grid-template-columns: 96px 1fr 28px; }
+    grid-template-columns: 96px 1fr 28px;
+  }
   .sc-whero__v .num {
-    font-size: 36px; }
+    font-size: 36px;
+  }
   .sc-stat__v {
-    font-size: 17px; }
+    font-size: 17px;
+  }
   .sc-onb__h {
-    font-size: 23px; }
+    font-size: 23px;
+  }
   .sc-ach-grid {
-    gap: 6px; }
+    gap: 6px;
+  }
 }
 @media (max-height: 640px) {
   .sc-onb__vis {
     height: 30vh;
-    min-height: 160px; }
+    min-height: 160px;
+  }
 }
 .sc-pill .dot-live::before,
 .sc-hero__nextk .dot-live::before {

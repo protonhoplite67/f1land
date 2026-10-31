@@ -128,7 +128,8 @@
 @keyframes scene-sc-blink {
   50% {
     box-shadow: 0 0 0 1px rgba(255, 210, 60, 0.4);
-    filter: brightness(0.82); }
+    filter: brightness(0.82);
+  }
 }
 
 /* ---------------- sector zone tags ---------------- */
@@ -157,7 +158,8 @@
   background: rgba(6, 10, 13, 0.78);
   color: var(--zc);
   font: 700 11px/16px var(--font-num, 'Chakra Petch', monospace);
-  letter-spacing: 0.08em; }
+  letter-spacing: 0.08em;
+}
 .zone-tag[data-selected='true'] {
   scale: 1.25;
   z-index: 1;
@@ -174,7 +176,8 @@
 
 @keyframes scene-zone-pulse {
   50% {
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--zc) 25%, transparent); }
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--zc) 25%, transparent);
+  }
 }
 
 /* ---------------- broadcast camera tag ---------------- */
@@ -215,12 +218,14 @@
 
 @keyframes scene-rec {
   50% {
-    opacity: 0.35; }
+    opacity: 0.35;
+  }
 }
 @keyframes scene-cut {
   from {
     opacity: 0;
-    translate: -8px 0; }
+    translate: -8px 0;
+  }
 }
 
 /* ---------------- moment flashes (overtake / finish) ---------------- */
@@ -253,18 +258,23 @@
 
 @keyframes scene-flash {
   0% {
-    opacity: 0; }
+    opacity: 0;
+  }
   18% {
-    opacity: 1; }
+    opacity: 1;
+  }
   100% {
-    opacity: 0; }
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .car-label--sc,
   .cam-tag__dot,
   .zone-tag[data-selected='true'] .zone-tag__s {
-    animation: none; }
+    animation: none;
+  }
   .scene-fx {
-    display: none; }
+    display: none;
+  }
 }

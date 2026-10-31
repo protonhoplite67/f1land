@@ -3003,30 +3003,42 @@
 /* ---------- Responsive ---------- */
 @media (max-width: 379px) {
   .pl-q__title {
-    font-size: 18px; }
+    font-size: 18px;
+  }
   .ot--zone .ot__label {
-    font-size: 12px; }
+    font-size: 12px;
+  }
   .pl-head__title {
-    font-size: 10.5px; }
+    font-size: 10.5px;
+  }
   .pl-lock {
-    padding: 0 8px; }
+    padding: 0 8px;
+  }
   .ot {
-    min-height: 88px; }
+    min-height: 88px;
+  }
   .duel2__last {
-    font-size: 14px; }
+    font-size: 14px;
+  }
   .tdock__chip {
-    font-size: 12px; }
+    font-size: 12px;
+  }
   .tdock__ret {
-    min-width: 74px; }
+    min-width: 74px;
+  }
   .tdock__ret b {
-    font-size: 19px; }
+    font-size: 19px;
+  }
   .sw__label b {
     font-size: 13px;
-    letter-spacing: 0.05em; }
+    letter-spacing: 0.05em;
+  }
   .rc__item {
-    grid-template-columns: 84px minmax(0, 1fr); }
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
   .pl-pulse__tag {
-    display: none; }
+    display: none;
+  }
 }
 .reduce-motion .pl-lock--urgent,
 .reduce-motion .pl-lock--warn,
@@ -3053,5 +3065,6 @@
   .sw__shine,
   .rs__scan span,
   .rc__sweep {
-    animation: none; }
+    animation: none;
+  }
 }

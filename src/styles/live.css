@@ -980,19 +980,24 @@
 /* Five labelled tabs need ~590px; narrower, only the selected one shows its label. */
 @media (max-width: 639px) {
   .lv-tabs {
-    gap: 2px; }
+    gap: 2px;
+  }
   .lv-tab {
-    min-width: 44px; }
+    min-width: 44px;
+  }
   .lv-tab:not(.lv-tab--on) .lv-tab__label {
-    display: none; }
+    display: none;
+  }
 }
 @media (max-width: 345px) {
   .lv-tabs {
     gap: 1px;
-    padding: 0 4px; }
+    padding: 0 4px;
+  }
   .lv-tab {
     min-width: 40px;
-    padding: 0 8px; }
+    padding: 0 8px;
+  }
 }
 
 /* ---------- Pool cards ---------- */
@@ -1705,18 +1710,22 @@
 @media (max-width: 379px) {
   .tw-chip {
     flex-basis: 54px;
-    padding-inline: 5px; }
+    padding-inline: 5px;
+  }
   .lv-session__track,
   .fc__stat--speed,
   .tt__name {
-    display: none; }
+    display: none;
+  }
   .fc__btn {
     min-width: 38px;
-    padding: 0 6px; }
+    padding: 0 6px;
+  }
 }
 @media (max-height: 680px) {
   .lv-moment__text {
-    -webkit-line-clamp: 1; }
+    -webkit-line-clamp: 1;
+  }
 }
 .reduce-motion .lv-live-dot,
 .reduce-motion .lv-empty__pulse,
@@ -1726,7 +1735,9 @@
 @media (prefers-reduced-motion: reduce) {
   .lv-live-dot,
   .lv-empty__pulse {
-    animation: none; }
+    animation: none;
+  }
   .dsheet {
-    transition: none; }
+    transition: none;
+  }
 }

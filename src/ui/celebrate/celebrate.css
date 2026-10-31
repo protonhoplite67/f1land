@@ -606,70 +606,89 @@
 @keyframes cel-pop {
   0% {
     opacity: 0;
-    transform: scale(0.35) rotate(-24deg); }
+    transform: scale(0.35) rotate(-24deg);
+  }
   55% {
     opacity: 1;
-    transform: scale(1.12) rotate(4deg); }
+    transform: scale(1.12) rotate(4deg);
+  }
   100% {
     opacity: 1;
-    transform: scale(1) rotate(0); }
+    transform: scale(1) rotate(0);
+  }
 }
 @keyframes cel-rise {
   from {
     opacity: 0;
-    transform: translateY(16px) scale(0.985); }
+    transform: translateY(16px) scale(0.985);
+  }
   to {
     opacity: 1;
-    transform: none; }
+    transform: none;
+  }
 }
 @keyframes cel-spin {
   to {
-    transform: rotate(360deg); }
+    transform: rotate(360deg);
+  }
 }
 @keyframes cel-ripple {
   0% {
     opacity: 0;
-    transform: scale(0.8); }
+    transform: scale(0.8);
+  }
   15% {
-    opacity: 0.7; }
+    opacity: 0.7;
+  }
   100% {
     opacity: 0;
-    transform: scale(1.9); }
+    transform: scale(1.9);
+  }
 }
 @keyframes cel-sweep {
   from {
-    transform: translateX(0) skewX(-18deg); }
+    transform: translateX(0) skewX(-18deg);
+  }
   to {
-    transform: translateX(560%) skewX(-18deg); }
+    transform: translateX(560%) skewX(-18deg);
+  }
 }
 @keyframes cel-twinkle {
   0%,
   100% {
     opacity: 0;
-    transform: scale(0) rotate(0); }
+    transform: scale(0) rotate(0);
+  }
   50% {
     opacity: 1;
-    transform: scale(1) rotate(45deg); }
+    transform: scale(1) rotate(45deg);
+  }
 }
 @keyframes cel-flag {
   to {
-    transform: translateX(48px); }
+    transform: translateX(48px);
+  }
 }
 @keyframes cel-timer {
   from {
-    transform: scaleX(1); }
+    transform: scaleX(1);
+  }
   to {
-    transform: scaleX(0); }
+    transform: scaleX(0);
+  }
 }
 @keyframes cel-bar {
   from {
-    transform: scaleX(var(--from, 0)); }
+    transform: scaleX(var(--from, 0));
+  }
 }
 @keyframes cel-shine {
   from {
-    transform: translateX(-120%); }
+    transform: translateX(-120%);
+  }
   to {
-    transform: translateX(120%); }
+    transform: translateX(120%);
+  }
 }
 
 /* ================================================================ */
@@ -1212,27 +1231,35 @@
 
 @media (max-width: 370px) {
   .stk .stk__cta .icon {
-    display: none; }
+    display: none;
+  }
   .stk .stk__h {
-    font-size: 17px; }
+    font-size: 17px;
+  }
 }
 
 @keyframes stk-flicker {
   0%,
   100% {
-    transform: scale(1) rotate(0); }
+    transform: scale(1) rotate(0);
+  }
   35% {
-    transform: scale(1.05, 0.96) rotate(-2deg); }
+    transform: scale(1.05, 0.96) rotate(-2deg);
+  }
   70% {
-    transform: scale(0.97, 1.05) rotate(1.5deg); }
+    transform: scale(0.97, 1.05) rotate(1.5deg);
+  }
 }
 @keyframes stk-flare {
   0% {
-    transform: scale(1); }
+    transform: scale(1);
+  }
   40% {
-    transform: scale(1.22); }
+    transform: scale(1.22);
+  }
   100% {
-    transform: scale(1); }
+    transform: scale(1);
+  }
 }
 @keyframes stk-pulse {
   0%,
@@ -1243,30 +1270,37 @@
 }
 @keyframes stk-pop {
   0% {
-    transform: scale(0.82); }
+    transform: scale(0.82);
+  }
   60% {
-    transform: scale(1.1); }
+    transform: scale(1.1);
+  }
   100% {
-    transform: scale(1); }
+    transform: scale(1);
+  }
 }
 @keyframes stk-bump {
   0% {
     opacity: 1;
-    transform: scale(1); }
+    transform: scale(1);
+  }
   100% {
     opacity: 0;
-    transform: scale(1.12); }
+    transform: scale(1.12);
+  }
 }
 @keyframes stk-chip {
   0%,
   100% {
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.25) inset,
-      0 8px 22px -8px rgba(198, 255, 61, 0.65); }
+      0 8px 22px -8px rgba(198, 255, 61, 0.65);
+    }
   50% {
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.25) inset,
-      0 8px 30px -4px rgba(198, 255, 61, 0.95); }
+      0 8px 30px -4px rgba(198, 255, 61, 0.95);
+    }
 }
 
 /* ================================================================ */
@@ -1381,7 +1415,9 @@
 @keyframes rem-breathe {
   0%,
   100% {
-    transform: scale(1); }
+    transform: scale(1);
+  }
   50% {
-    transform: scale(1.06); }
+    transform: scale(1.06);
+  }
 }
