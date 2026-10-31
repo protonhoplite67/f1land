@@ -2,6 +2,11 @@
 export default {
   ru: {
     'lv.lapShort': 'Круг',
+    'lv.view.title': 'Вид трансляции',
+    'lv.view.zones': 'Сектора на трассе',
+    'lv.view.zonesSub': 'Цветные зоны S1, S2, S3',
+    'lv.rival.title': 'Показывать соперника · {d}',
+    'lv.rival.sub': 'Ближайший пилот подсветится на трассе',
     'lv.trackShort': 'трасса',
     'lv.fullTower': 'Полный хронометраж',
     'lv.leader': 'Лидер',
@@ -152,6 +157,11 @@ export default {
   },
   en: {
     'lv.lapShort': 'Lap',
+    'lv.view.title': 'View',
+    'lv.view.zones': 'Track sectors',
+    'lv.view.zonesSub': 'Coloured S1, S2, S3 zones',
+    'lv.rival.title': 'Show rival · {d}',
+    'lv.rival.sub': 'The nearest driver is highlighted on track',
     'lv.trackShort': 'track',
     'lv.fullTower': 'Full timing',
     'lv.leader': 'Leader',

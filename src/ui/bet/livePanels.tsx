@@ -10,7 +10,7 @@ import { fmtClock, fmtGap, fmtLap, fmtNumber, fmtOdds, fmtSec, t } from '@/i18n/
 import { msUntilLock } from '@/domain/lifecycle';
 import { marketTitle, outcomeShort, poolTexts } from '@/app/poolText';
 import { useSessionNow } from '@/app/hooks';
-import { DriverAvatar, LineChart, TyreBadge } from '@/ui/kit';
+import { LineChart, TyreBadge } from '@/ui/kit';
 import { IconChevron, IconLock, IconPit } from '@/ui/icons';
 import { haptic } from '@/telegram/sdk';
 import { CountdownRing, PoolMeta } from './parts';
@@ -110,9 +110,9 @@ function carGap(c: LiveCar, quali: boolean, interval: boolean): string {
 /* Compact timing strip (top-5 visible, horizontally scrollable)        */
 /* ------------------------------------------------------------------ */
 
-export function TowerStrip({ cars, followId, quali, cut, open, onToggle, onPick }: { cars: LiveCar[]; followId: string | null; quali: boolean; cut: number | null; open: boolean; onToggle: () => void; onPick: (id: string) => void }) {
+export function TowerStrip({ cars, followId, quali, cut, onPick }: { cars: LiveCar[]; followId: string | null; quali: boolean; cut: number | null; onPick: (id: string) => void }) {
   const ref = useRef<HTMLDivElement>(null);
-  // Keep the followed driver in view when it is outside the top-5.
+  // Keep the followed driver in view when it is outside the visible part.
   useEffect(() => {
     const node = ref.current?.querySelector<HTMLElement>('.tw-chip--on');
     if (node && ref.current) {
@@ -131,64 +131,13 @@ export function TowerStrip({ cars, followId, quali, cut, open, onToggle, onPick 
             style={{ ['--team' as string]: teamColor(c.id) }}
             onClick={() => onPick(c.id)}
             aria-label={`P${c.position} ${DRIVER_BY_ID[c.id]?.lastName ?? c.id}`}
+            aria-pressed={c.id === followId}
           >
             <span className="tw-chip__top">
               <span className="tw-chip__pos num">{c.position}</span>
               <span className="tw-chip__code">{DRIVER_BY_ID[c.id]?.code}</span>
-              {c.boost && <span className="tw-chip__boost" title="Overtake Mode" />}
             </span>
             <span className={`tw-chip__gap num ${c.mode === 'PIT_LANE' || c.mode === 'PIT_STOP' ? 'cyan' : ''}`}>{carGap(c, quali, true)}</span>
-          </button>
-        ))}
-      </div>
-      <button type="button" className={`tw-strip__more ${open ? 'tw-strip__more--on' : ''}`} onClick={onToggle} aria-expanded={open} aria-label={open ? t('ui.collapse') : t('lv.fullTower')}>
-        <IconChevron dir={open ? 'up' : 'down'} size={16} />
-      </button>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Full tower (expanded)                                               */
-/* ------------------------------------------------------------------ */
-
-export function TowerPanel({ cars, followId, quali, cut, onPick, onClose }: { cars: LiveCar[]; followId: string | null; quali: boolean; cut: number | null; onPick: (id: string) => void; onClose: () => void }) {
-  const [interval, setInterval_] = useState(true);
-  return (
-    <div className="tw-panel" role="table" aria-label={t('live.timing')}>
-      <div className="tw-panel__head" role="row">
-        <span className="tw-panel__title">{t('live.timing')}</span>
-        {!quali && (
-          <button type="button" className="tw-panel__toggle" onClick={() => (haptic.tap(), setInterval_(!interval))}>
-            {interval ? t('live.interval') : t('live.gap')}
-            <IcSwapCar size={12} />
-          </button>
-        )}
-        <button type="button" className="tw-panel__close" aria-label={t('ui.close')} onClick={onClose}>
-          ×
-        </button>
-      </div>
-      <div className="tw-panel__rows">
-        {cars.map((c) => (
-          <button
-            key={c.id}
-            type="button"
-            role="row"
-            className={`tw-row ${c.id === followId ? 'tw-row--on' : ''} ${c.status !== 'ACTIVE' || c.eliminatedIn ? 'tw-row--out' : ''} ${quali && cut !== null && c.position === cut + 1 ? 'tw-row--cut' : ''}`}
-            onClick={() => onPick(c.id)}
-          >
-            <span className="tw-row__pos num">{c.position}</span>
-            <span className="tw-row__bar" style={{ background: teamColor(c.id) }} />
-            <span className="tw-row__code">{DRIVER_BY_ID[c.id]?.code}</span>
-            <span className={`tw-row__gap num ${c.mode === 'PIT_LANE' || c.mode === 'PIT_STOP' ? 'cyan' : ''}`}>{carGap(c, quali, interval)}</span>
-            {!quali && (
-              <span className="tw-row__tyre">
-                <TyreBadge compound={c.tyre} size={16} />
-                <span className="num">{c.tyreAgeLaps}</span>
-              </span>
-            )}
-            {!quali && <span className="tw-row__pits num">{c.pitStops > 0 ? `${c.pitStops}×` : ''}</span>}
-            {c.boost && <span className="tw-row__boost" title="Overtake Mode" />}
           </button>
         ))}
       </div>
@@ -200,64 +149,42 @@ export function TowerPanel({ cars, followId, quali, cut, onPick, onClose }: { ca
 /* Followed driver card                                                */
 /* ------------------------------------------------------------------ */
 
-export function FollowCard({ car, cars, quali, rivalId, onSwap, onRival }: { car: LiveCar; cars: LiveCar[]; quali: boolean; rivalId: string | null; onSwap: () => void; onRival: (id: string | null) => void }) {
+/** Followed driver: one quiet row. Tapping it opens the driver picker (and the rival option). */
+export function FollowCard({ car, cars, quali, onOpen }: { car: LiveCar; cars: LiveCar[]; quali: boolean; onOpen: () => void }) {
   const d = DRIVER_BY_ID[car.id]!;
   const team = TEAM_BY_ID[d.teamId]!;
   const ahead = cars.find((c) => c.position === car.position - 1) ?? null;
-  const behind = cars.find((c) => c.position === car.position + 1) ?? null;
-  const rivalCandidate = ahead ?? behind;
-  const rival = rivalId ? cars.find((c) => c.id === rivalId) ?? null : null;
+  const state = car.status !== 'ACTIVE' ? t(`status.${car.status}`) : car.occupancy !== 'ON_TRACK' ? t(`occ.${car.occupancy}`) : `S${car.sector}`;
+  const value = quali ? fmtLap(car.segmentBestMs ?? null) : car.position === 1 ? t('lv.leader') : car.intervalMs !== null ? fmtGap(car.intervalMs, 1) : '—';
+  const valueSub = quali ? t('live.bestLap') : car.position === 1 ? `${t('lv.lapShort')} ${car.driverLaps + 1}` : ahead ? `→ ${DRIVER_BY_ID[ahead.id]?.code}` : '';
   return (
-    <div className="fc" style={{ ['--team' as string]: team.color }}>
-      <span className="fc__stripe" />
-      <DriverAvatar id={car.id} size={40} ring />
-      <div className="fc__who">
-        <div className="fc__name">
+    <button type="button" className="fc" style={{ ['--team' as string]: team.color }} onClick={onOpen} aria-label={`${t('live.changeDriver')}: P${car.position} ${d.lastName}`}>
+      <span className="fc__tick" aria-hidden="true" />
+      <span className="fc__who">
+        <span className="fc__name">
           <span className="fc__pos num">P{car.position}</span>
           <b className="ellipsis">{d.lastName}</b>
-        </div>
-        <div className="fc__team ellipsis">
-          {team.shortName}
-          {car.status !== 'ACTIVE' ? ` · ${t(`status.${car.status}`)}` : car.occupancy !== 'ON_TRACK' ? ` · ${t(`occ.${car.occupancy}`)}` : ` · S${car.sector}`}
-        </div>
-      </div>
-      <div className="fc__stats">
-        <span className="fc__stat fc__stat--speed">
-          <b className="num">{car.speedKph}</b>
-          <small>km/h</small>
         </span>
-        {!quali && (
-          <span className="fc__stat fc__stat--tyre">
-            <TyreBadge compound={car.tyre} size={18} />
-            <small className="num">{car.tyreAgeLaps}L</small>
+        <span className="fc__team">
+          <span className="ellipsis">
+            {team.shortName} · {state}
           </span>
-        )}
-        <span className="fc__stat">
-          <b className="num">{quali ? fmtLap(car.segmentBestMs ?? null) : car.position === 1 ? t('lv.leader') : car.intervalMs !== null ? fmtGap(car.intervalMs, 1) : '—'}</b>
-          <small>{quali ? t('live.bestLap') : car.position === 1 ? `L${car.driverLaps + 1}` : ahead ? `→ ${DRIVER_BY_ID[ahead.id]?.code}` : t('live.interval')}</small>
+          {!quali && (
+            <span className="fc__tyre num">
+              <TyreBadge compound={car.tyre} size={14} />
+              {t('home2.laps', { n: car.tyreAgeLaps })}
+            </span>
+          )}
         </span>
-      </div>
-      <div className="fc__btns">
-        {rivalCandidate && (
-          <button
-            type="button"
-            className={`fc__btn ${rival ? 'fc__btn--on' : ''}`}
-            aria-pressed={!!rival}
-            aria-label={rival ? `${t('pool.rivalTag')}: ${DRIVER_BY_ID[rival.id]?.code}` : `${t('pool.rivalTag')}: ${DRIVER_BY_ID[rivalCandidate.id]?.code}`}
-            onClick={() => {
-              haptic.impact('light');
-              onRival(rival ? null : rivalCandidate.id);
-            }}
-          >
-            <IcSwords size={16} />
-            <span className="num">{DRIVER_BY_ID[(rival ?? rivalCandidate).id]?.code}</span>
-          </button>
-        )}
-        <button type="button" className="fc__btn" aria-label={t('live.changeDriver')} onClick={onSwap}>
-          <IcSwapCar size={16} />
-        </button>
-      </div>
-    </div>
+      </span>
+      <span className="fc__val">
+        <b className="num">{value}</b>
+        {valueSub && <small className="num">{valueSub}</small>}
+      </span>
+      <span className="fc__swap" aria-hidden="true">
+        <IcSwapCar size={16} />
+      </span>
+    </button>
   );
 }
 
