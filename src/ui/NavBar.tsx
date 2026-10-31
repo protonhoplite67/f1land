@@ -27,7 +27,7 @@ const TABS: Array<{ id: TabId; icon: typeof IconHome; key: string }> = [
 
 /** Car length in px; keep in sync with `.nav__car` width. */
 const CAR_LEN = 46;
-const SPRING = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+const SPRING = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 type Flag = 'live' | 'sc' | null;
 
