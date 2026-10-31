@@ -59,11 +59,11 @@ function puff(lane: HTMLElement, x: number, y: number, drift: number, size = 9, 
 }
 
 /**
- * Bottom navigation. The selection indicator is a top-down F1 car parked under the active
- * tab. Switching tabs drives it there: a pivot (with tyre smoke) when it has to turn round,
- * launch, light trail at speed, rain light on braking, and a suspension settle on arrival.
- * Tabs it passes on the way flinch in its slipstream. Tapping the active tab scrolls the
- * screen to the top and the car revs in place.
+ * Bottom navigation. The bar's top edge is the track: a top-down F1 car rides on it and tows
+ * the recessed "pit box" that marks the active tab. Switching tabs drives it there: a pivot
+ * (with tyre smoke) when it has to turn round, launch, a light trail along the edge, rain light
+ * on braking, and a suspension settle as it pulls into the box. Tabs it passes flinch in its
+ * slipstream. Tapping the active tab scrolls the screen to the top and the car revs in place.
  *
  * Navigation itself is instant; the drive is purely decorative and is skipped under
  * reduced motion.
@@ -84,6 +84,7 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const chassisRef = useRef<HTMLDivElement>(null);
   const trailRef = useRef<HTMLDivElement>(null);
+  const wellRef = useRef<HTMLDivElement>(null);
   const items = useRef<Array<HTMLButtonElement | null>>([]);
   // x: car centre in lane px; yaw: degrees, 0 = nose right, -180 = nose left.
   const sim = useRef({ x: null as number | null, yaw: 0, raf: 0 });
@@ -98,6 +99,13 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
     sim.current.yaw = yaw;
     carRef.current!.style.transform = `translate3d(${x}px,0,0)`;
     bodyRef.current!.style.transform = `rotate(${yaw}deg)`;
+    const well = wellRef.current;
+    const tabW = items.current[0]?.offsetWidth;
+    if (well && tabW) {
+      const w = Math.min(76, tabW - 10);
+      well.style.width = `${w}px`;
+      well.style.marginLeft = `${-w / 2}px`;
+    }
   };
 
   useLayoutEffect(() => {
@@ -183,6 +191,8 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
       sim.current.yaw = yaw;
       car.style.transform = `translate3d(${x}px,0,0)`;
       bodyRef.current!.style.transform = `rotate(${yaw}deg) scaleX(${1 + speed * 0.07})`;
+      // The box stretches behind the car at speed, then snaps back as it parks.
+      if (wellRef.current) wellRef.current.style.transform = `scaleX(${1 + speed * 0.18})`;
       const len = Math.min(78, dist * 0.5) * speed;
       trail.style.width = `${len}px`;
       trail.style.opacity = String(Math.min(1, speed * 1.4));
@@ -193,6 +203,7 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
       }
       place(to, yaw1);
       trail.style.opacity = '0';
+      if (wellRef.current) wellRef.current.style.transform = '';
       delete car.dataset.moving;
       // Rain light lingers a beat after the stop, like a real car.
       window.setTimeout(() => delete car.dataset.brake, 260);
@@ -211,6 +222,7 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
       delete car.dataset.moving;
       delete car.dataset.brake;
       trail.style.opacity = '0';
+      if (wellRef.current) wellRef.current.style.transform = '';
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, reduced, hidden]);
@@ -286,9 +298,10 @@ export function NavBar({ hidden }: { hidden?: boolean }) {
       })}
       <div className="nav__lane" ref={laneRef} aria-hidden="true">
         <div className="nav__car" ref={carRef}>
+          <div className="nav__well" ref={wellRef} />
+          <div className="nav__rim" />
           <div className="nav__car-body" ref={bodyRef}>
             <div className="nav__trail" ref={trailRef} />
-            <div className="nav__car-glow" />
             <div className="nav__car-chassis" ref={chassisRef}>
               <NavCar />
             </div>
