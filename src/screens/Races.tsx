@@ -696,4 +696,3 @@ export function NotFound({ onBack }: { onBack: () => void }) {
     </>
   );
 }
-
