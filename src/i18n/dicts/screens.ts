@@ -26,6 +26,8 @@ export default {
 
     'scr.races.kicker': 'Календарь',
     'scr.races.progress': 'Пройдено',
+    'scr.races.season': 'Сезон 2026 · пройдено {d} из {n}',
+    'scr.races.in': 'через {t}',
     'scr.races.empty': 'Нет этапов по фильтру',
     'scr.races.startsIn': '{s} — старт',
     'scr.races.weekend': 'Уикенд',
@@ -95,6 +97,12 @@ export default {
     'scr.driver.demoNote': 'Статистика сезона рассчитана по DEMO-результатам и не является официальной.',
 
     'scr.profile.demoAccount': 'DEMO-аккаунт',
+    'pf.toLevel': '{n} XP до {l} уровня',
+    'pf.pickDriver': 'Выбрать любимого пилота',
+    'pf.rank': '#{n} в сезоне',
+    'pf.first.title': 'Сделайте первый прогноз',
+    'pf.first.sub': 'Здесь появятся точность, профит и серия побед.',
+    'pf.first.cta': 'К гонке',
     'scr.profile.inPlay': 'В игре',
     'scr.profile.profitCurve': 'Динамика результата',
     'scr.profile.pickFav': 'Выберите любимого пилота',
@@ -231,6 +239,8 @@ export default {
 
     'scr.races.kicker': 'Calendar',
     'scr.races.progress': 'Done',
+    'scr.races.season': 'Season 2026 · {d} of {n} done',
+    'scr.races.in': 'in {t}',
     'scr.races.empty': 'No rounds for this filter',
     'scr.races.startsIn': '{s} starts',
     'scr.races.weekend': 'Weekend',
@@ -300,6 +310,12 @@ export default {
     'scr.driver.demoNote': 'Season stats are computed from DEMO results and are not official.',
 
     'scr.profile.demoAccount': 'DEMO account',
+    'pf.toLevel': '{n} XP to level {l}',
+    'pf.pickDriver': 'Pick your favourite driver',
+    'pf.rank': '#{n} this season',
+    'pf.first.title': 'Make your first call',
+    'pf.first.sub': 'Your accuracy, profit and win streak will show up here.',
+    'pf.first.cta': 'Go to the race',
     'scr.profile.inPlay': 'In play',
     'scr.profile.profitCurve': 'Result trend',
     'scr.profile.pickFav': 'Pick your favourite driver',
